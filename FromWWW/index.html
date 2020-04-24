@@ -1,0 +1,29 @@
+<html>
+<head>
+ <title>DataLog manual download</title>
+ <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+ <meta name="referrer" content="same-origin" />
+</head>
+<body>
+
+
+ <h1>DataLog manual download</h1>
+ <div><button id="load">Load list</button></div>
+
+ <div><ul id="list"></ul></div>
+
+ <script type="text/javascript">
+ $('#load').click(function(){
+    $.get('https://192.168.0.1/DataLogs', {'Action': 'LIST'},
+    function(data){
+        $('#list').empty();
+        $.each(data.split(/\r\n/), function(){
+            if (this.length == 0) return;
+            $('#list').append('<li><a href="https://192.168.0.1' + this.split('|')[1] + '">' + this.split('|')[0] + '</a></li>');
+            });
+        });
+ });
+ </script>
+
+</body>
+</html>
