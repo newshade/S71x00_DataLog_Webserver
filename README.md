@@ -5,7 +5,8 @@ Currently tested on:
 <ul>
  <li>S7-1200 FW V4.4</li>
 </ul>
-Setting up:<br />
+Setting up:
+<br />
 <ul>
  <li>Set the protocol before IP address in the script based on your S7-1x00 webserver setting (HTTP or HTTPS)</li>
  <li>Set the IP address</li>
