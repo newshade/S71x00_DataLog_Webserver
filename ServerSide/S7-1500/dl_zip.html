@@ -1,0 +1,53 @@
+<html>
+<head>
+ <title>DataLog Download</title>
+ <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+ <script type="text/javascript" src="jszip.min.js"></script>
+ <script type="text/javascript" src="filesaver.js"></script>
+ <meta name="referrer" content="same-origin" />
+</head>
+<body>
+
+<!-- Listing DataLogs and downloading them all at once in single ZIP archive -->
+<h1>Option 2</h1>
+<h2>Archive all DataLogs and download them as one ZIP file</h2>
+<div><button id="create_zip">Generate ZIP file</button></div>
+
+<script>
+function saveToZip (filename, urls) {
+    var zip = new JSZip()
+    //var folder = zip.folder('CSV')
+    urls.forEach((url)=> {
+        var blobPromise = fetch(url).then(r => {
+            if (r.status == 200) return r.blob()
+            return Promise.reject(new Error(r.statusText))
+        })
+        // https://192.168.0.10/DataLogs?Path=/DataLogs/Log_1.csv&Action=DOWNLOAD&E=1
+        var name = url.substring(url.lastIndexOf('Path=/DataLogs/'), url.lastIndexOf('&')).split('&')[0].split('/')[2]
+        zip.file(name, blobPromise)
+    })
+
+    zip.generateAsync({type:"blob"})
+        .then(blob => saveAs(blob, filename))
+        .catch(e => console.log(e));
+}
+
+$('#create_zip').click(function(){
+    var dateobj = new Date()
+    var URLS = [], i = 0
+    $.get('https://192.168.0.10/DataLogs', {'Action': 'LIST'},
+    function(data){
+        $.each(data.split(/\r\n/), function(){
+            if (this.length == 0) return;
+            URLS[i] = 'https://192.168.0.10' + this;
+            i++;
+        });
+        console.log(URLS);
+        saveToZip('DataLogs_' + dateobj.toISOString().substring(0, 10) + '.zip', URLS);
+    });
+    
+});
+</script>
+
+</body>
+</html>

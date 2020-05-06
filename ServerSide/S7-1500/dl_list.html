@@ -1,0 +1,30 @@
+<html>
+<head>
+ <title>DataLog Download</title>
+ <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+ <meta name="referrer" content="same-origin" />
+</head>
+<body>
+
+<!-- Listing DataLogs and downloading them one by one via hyperlinks -->
+ <h1>Option 1</h1>
+ <h2>Load list of DataLogs from PLC and generate download links</h2>
+ <div><button id="load">Generate list of URLs</button></div>
+ <div><ul id="list"></ul></div>
+
+ <script type="text/javascript">
+ $('#load').click(function(){
+    $.get('https://192.168.0.10/DataLogs', {'Action': 'LIST'},
+    function(data){
+        $('#list').empty();
+        $.each(data.split(/\r\n/), function(){
+            if (this.length == 0) return;
+            //var url_id = this.split('|')[0].split('.')[0]
+            $('#list').append('<li><a href="https://192.168.0.10' + this + '">' + this.substring(this.lastIndexOf('Path=/DataLogs/'), this.lastIndexOf('&')).split('&')[0].split('/')[2] + '</a></li>');
+            });
+        });
+ });
+ </script>
+
+</body>
+</html>
