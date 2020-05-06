@@ -22,7 +22,6 @@ function saveToZip (filename, urls) {
             if (r.status == 200) return r.blob()
             return Promise.reject(new Error(r.statusText))
         })
-        // https://192.168.0.10/DataLogs?Path=/DataLogs/Log_1.csv&Action=DOWNLOAD&E=1
         var name = url.substring(url.lastIndexOf('Path=/DataLogs/'), url.lastIndexOf('&')).split('&')[0].split('/')[2]
         zip.file(name, blobPromise)
     })
@@ -35,11 +34,12 @@ function saveToZip (filename, urls) {
 $('#create_zip').click(function(){
     var dateobj = new Date()
     var URLS = [], i = 0
-    $.get('https://192.168.0.10/DataLogs', {'Action': 'LIST'},
+    var site_url = window.location.href
+    $.get(site_url.split('/')[0] + '//' + site_url.split('/')[2] + '/DataLogs', {'Action': 'LIST'},
     function(data){
         $.each(data.split(/\r\n/), function(){
             if (this.length == 0) return;
-            URLS[i] = 'https://192.168.0.10' + this;
+            URLS[i] = site_url.split('/')[0] + '//' + site_url.split('/')[2] + this;
             i++;
         });
         console.log(URLS);

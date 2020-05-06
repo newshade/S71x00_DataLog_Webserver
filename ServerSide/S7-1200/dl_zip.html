@@ -34,11 +34,12 @@ function saveToZip (filename, urls) {
 $('#create_zip').click(function(){
     var dateobj = new Date()
     var URLS = [], i = 0
-    $.get('https://192.168.0.1/DataLogs', {'Action': 'LIST'},
+    var site_url = window.location.href
+    $.get(site_url.split('/')[0] + '//' + site_url.split('/')[2] + '/DataLogs', {'Action': 'LIST'},
     function(data){
         $.each(data.split(/\r\n/), function(){
             if (this.length == 0) return;
-            URLS[i] = 'https://192.168.0.1' + this.split('|')[1];
+            URLS[i] = site_url.split('/')[0] + '//' + site_url.split('/')[2] + this.split('|')[1];
             i++;
         });
         console.log(URLS);
